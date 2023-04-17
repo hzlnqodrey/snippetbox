@@ -8,12 +8,12 @@ import (
 // Define a home handler function which writes a byte slice containing
 // "Hello from Snippetbox" as the response body.
 func home(w http.ResponseWriter, r *http.Request) {
-	
+
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
 	}
-	
+
 	w.Write([]byte("Hello form Snippetbox"))
 }
 
@@ -23,6 +23,11 @@ func showSnippet(w http.ResponseWriter, r *http.Request) {
 
 func createSnippet(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
+		// Use the Header().Set() method to add an 'Allow: POST' header to the
+		// response header map. The first parameter is the header name, and
+		// the second parameter is the header value.
+		w.Header().Set("Allow", "POST")
+
 		w.WriteHeader(405)
 		w.Write([]byte("Method not allowed"))
 		return
