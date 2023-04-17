@@ -28,8 +28,24 @@ func createSnippet(w http.ResponseWriter, r *http.Request) {
 		// the second parameter is the header value.
 		w.Header().Set("Allow", "POST")
 
-		w.WriteHeader(405)
-		w.Write([]byte("Method not allowed"))
+		// Manipulating the header map
+		w.Header().Set("Cache-Control", "public, max-age=31536000")
+
+		w.Header().Add("Cache-Control", "public")
+		w.Header().Add("Cache-Control", "max-age=31536000")
+
+		w.Header().Del("Cache-Control")
+
+		w.Header().Get("Cache-Control")
+
+		// 	w.WriteHeader(405)
+		// 	w.Write([]byte("Method not allowed"))
+		// 	return
+
+		// == The http.Error shorcut
+		// Use the http.Error() function to send a 405 status code and "Method N
+		// Allowed" string as the response body.
+		http.Error(w, "Method is not allowed", 405)
 		return
 	}
 
