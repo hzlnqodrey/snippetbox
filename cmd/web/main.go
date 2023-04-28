@@ -4,12 +4,19 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
 	// Chapter 3.1 - CLI Flag
 	addr := flag.String("addr", ":4000", "HTTP Network Address")
 	flag.Parse()
+
+	// Chapter 3.2 - Levelled Logging
+	// info logging
+	infolog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	// error logging
+	errorlog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	mux := http.NewServeMux()
 
@@ -20,7 +27,7 @@ func main() {
 	mux.HandleFunc("/snippet", showSnippet)
 	mux.HandleFunc("/snippet/create", createSnippet)
 
-	log.Printf("Starting server on %s", *addr)
+	infolog.Printf("Starting server on %s", *addr)
 	err := http.ListenAndServe(*addr, mux)
-	log.Fatal(err)
+	errorlog.Fatal(err)
 }
