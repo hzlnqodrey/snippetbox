@@ -33,21 +33,12 @@ func main() {
 		infolog:  infolog,
 	}
 
-	mux := http.NewServeMux()
-
-	fileserver := http.FileServer(http.Dir("./ui/static/"))
-	mux.Handle("/static/", http.StripPrefix("/static", fileserver))
-
-	// Chapter 3.3 - dependency Injection
-	// Swap the route declarations to use the application struct's methods as handler functions.
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/snippet", app.showSnippet)
-	mux.HandleFunc("/snippet/create", app.createSnippet)
-
+	// Chapter 3.5 - Isolation the Application Routes
+	// This is quite a bit neater. The routes for our application are now isolated and encapsulated in the app.routes() method,
 	srv := &http.Server{
 		Addr:     *addr,
 		ErrorLog: errorlog,
-		Handler:  mux,
+		Handler:  app.routes(),
 	}
 
 	infolog.Printf("Starting server on %s", *addr)
