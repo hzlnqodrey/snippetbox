@@ -1,10 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"log"
 	"net/http"
 	"os"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // Chapter 3.3 - dependency Injection
@@ -18,6 +21,9 @@ type application struct {
 func main() {
 	// Chapter 3.1 - CLI Flag
 	addr := flag.String("addr", ":4000", "HTTP Network Address")
+
+	// Chapter 4.3 - Database Connection Pool
+	dsn := flag.String("dsn", "web:qodri123@/snippetbox?parseTime=true", "MySQL Database")
 	flag.Parse()
 
 	// Chapter 3.2 - Levelled Logging
@@ -25,6 +31,15 @@ func main() {
 	infolog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	// error logging
 	errorlog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	// Chapter 4.3 - Database Connection Pool
+	db, err := openDB(*dsn)
+	if err != nil {
+		errorlog.Fatal(err)
+	}
+
+	// Chapter 4.3 - Database Connection Pool
+	defer db.Close()
 
 	// Chapter 3.3 - dependency Injection
 	// Initialize a new instance of application containing the dependencies
@@ -44,4 +59,19 @@ func main() {
 	infolog.Printf("Starting server on %s", *addr)
 	err := srv.ListenAndServe()
 	errorlog.Fatal(err)
+}
+
+// Chapter 4.3 Database Connection Pool
+// the openDB() function wraps sql.Open() and returns a sql.DB connection pool for a given DSN
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
