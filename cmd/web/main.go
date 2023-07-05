@@ -57,8 +57,8 @@ func main() {
 	}
 
 	infolog.Printf("Starting server on %s", *addr)
-	err := srv.ListenAndServe()
-	errorlog.Fatal(err)
+	ERR := srv.ListenAndServe()
+	errorlog.Fatal(ERR)
 }
 
 // Chapter 4.3 Database Connection Pool
