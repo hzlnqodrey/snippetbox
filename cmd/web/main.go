@@ -8,6 +8,7 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/hzlnqodrey/snippetbox.git/pkg/models/mysql"
 )
 
 // Chapter 3.3 - dependency Injection
@@ -16,6 +17,8 @@ import (
 type application struct {
 	errorlog *log.Logger
 	infolog  *log.Logger
+	// Chapter 4.4 - Inject Model Dependency
+	snippets *mysql.SnippetModel
 }
 
 func main() {
@@ -46,6 +49,8 @@ func main() {
 	app := &application{
 		errorlog: errorlog,
 		infolog:  infolog,
+		// Chapter 4.4 - Initialize a mysql.SnippetModel instance into application dependencies
+		snippets: &mysql.SnippetModel{DB: db},
 	}
 
 	// Chapter 3.5 - Isolation the Application Routes
