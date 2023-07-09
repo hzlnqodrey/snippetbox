@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+
+	"github.com/hzlnqodrey/snippetbox.git/pkg/models"
 )
 
 // Chapter 3.3 - dependency Injection
@@ -50,7 +52,18 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Displaying a specific snippet with ID %d...", id)
+	// Chap 4.6 - Using the Models
+	s, err := app.snippets.Get(id)
+	if err == models.ErrNoRecord {
+		app.notFound(w)
+		return
+	} else if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	// Chap 4.6 - Write the snippet data as a plain-text HTTP response body.
+	fmt.Fprintf(w, "%v", s)
 }
 
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
