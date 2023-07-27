@@ -57,7 +57,6 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-
 	if err != nil || id < 1 {
 		app.notFound(w)
 		return
@@ -76,6 +75,11 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	// Chap 4.6 - Write the snippet data as a plain-text HTTP response body.
 	// fmt.Fprintf(w, "%v", s)
 
+	// Chap 5.1 - Rendering Multiple Data
+	// Create an instance of a templateData struct holding the snippet data.
+	data := &templateData{Snippet: s}
+
+
 	// Chap 5.1 - Displaying Dynamic Data
 	files := []string{
 		"./ui/html/show.page.tmpl",
@@ -89,8 +93,9 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
-	
-	err = ts.Execute(w, s)
+
+	// Pass in the templateData struct when executing the template.
+	err = ts.Execute(w, data)
 	if err != nil {
 		app.serverError(w, err)
 	}
