@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	// "html/template"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -19,40 +19,40 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s, err := app.snippets.Latest()
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	for _, snippet := range s {
-		fmt.Fprintf(w, "%v\n", snippet)
-	}
-
-	// Comment out
-	// // Initialize a slice containing the paths to the two files. Note that the
-	// // home.page.tmpl file must be the *first* file in the slice.
-	// files := []string{
-	// 	"./ui/html/home.page.tmpl",
-	// 	"./ui/html/base.layout.tmpl",
-	// 	"./ui/html/footer.partial.tmpl",
-	// }
-
-	// // turn files into variadic
-	// ts, err := template.ParseFiles(files...)
-
+	// Comment Out
+	// s, err := app.snippets.Latest()
 	// if err != nil {
-	// 	// Chapter 3.4 - Centralized Error Handling - Use serverError() helper
 	// 	app.serverError(w, err)
 	// 	return
 	// }
 
-	// err = ts.Execute(w, nil)
-
-	// if err != nil {
-	// 	// Chapter 3.4 - Centralized Error Handling - Use serverError() helper
-	// 	app.serverError(w, err)
+	// for _, snippet := range s {
+	// 	fmt.Fprintf(w, "%v\n", snippet)
 	// }
+
+	// Initialize a slice containing the paths to the two files. Note that the
+	// home.page.tmpl file must be the *first* file in the slice.
+	files := []string{
+		"./ui/html/home.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
+
+	// turn files into variadic
+	ts, err := template.ParseFiles(files...)
+
+	if err != nil {
+		// Chapter 3.4 - Centralized Error Handling - Use serverError() helper
+		app.serverError(w, err)
+		return
+	}
+
+	err = ts.Execute(w, nil)
+
+	if err != nil {
+		// Chapter 3.4 - Centralized Error Handling - Use serverError() helper
+		app.serverError(w, err)
+	}
 }
 
 func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
@@ -74,7 +74,26 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Chap 4.6 - Write the snippet data as a plain-text HTTP response body.
-	fmt.Fprintf(w, "%v", s)
+	// fmt.Fprintf(w, "%v", s)
+
+	// Chap 5.1 - Displaying Dynamic Data
+	files := []string{
+		"./ui/html/show.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
+
+	// Parse the template files
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	
+	err = ts.Execute(w, s)
+	if err != nil {
+		app.serverError(w, err)
+	}
 }
 
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
