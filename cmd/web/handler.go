@@ -20,15 +20,14 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Comment Out
-	// s, err := app.snippets.Latest()
-	// if err != nil {
-	// 	app.serverError(w, err)
-	// 	return
-	// }
+	s, err := app.snippets.Latest()
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
 
-	// for _, snippet := range s {
-	// 	fmt.Fprintf(w, "%v\n", snippet)
-	// }
+	// Chapter 5.2 - Template Action and Function
+	data := &templateData{Snippets: s}
 
 	// Initialize a slice containing the paths to the two files. Note that the
 	// home.page.tmpl file must be the *first* file in the slice.
@@ -40,15 +39,14 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	// turn files into variadic
 	ts, err := template.ParseFiles(files...)
-
 	if err != nil {
 		// Chapter 3.4 - Centralized Error Handling - Use serverError() helper
 		app.serverError(w, err)
 		return
 	}
 
-	err = ts.Execute(w, nil)
-
+	// Chapter 5.2 - Template Action and Function
+	err = ts.Execute(w, data)
 	if err != nil {
 		// Chapter 3.4 - Centralized Error Handling - Use serverError() helper
 		app.serverError(w, err)
@@ -78,7 +76,6 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	// Chap 5.1 - Rendering Multiple Data
 	// Create an instance of a templateData struct holding the snippet data.
 	data := &templateData{Snippet: s}
-
 
 	// Chap 5.1 - Displaying Dynamic Data
 	files := []string{
