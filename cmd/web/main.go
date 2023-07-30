@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"html/template"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/hzlnqodrey/snippetbox.git/pkg/models/mysql"
@@ -19,6 +20,8 @@ type application struct {
 	infolog  *log.Logger
 	// Chapter 4.4 - Inject Model Dependency
 	snippets *mysql.SnippetModel
+	// Chapter 5.3 - Caching Templates
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -44,6 +47,13 @@ func main() {
 	// Chapter 4.3 - Database Connection Pool
 	defer db.Close()
 
+	// Chapter 5.3 - Caching Templates
+	// Initialize a new template cache
+	templateCache, err := newTemplateCache("./ui/html")
+	if err != nil {
+		errorlog.Fatal(err)
+	}
+
 	// Chapter 3.3 - dependency Injection
 	// Initialize a new instance of application containing the dependencies
 	app := &application{
@@ -51,6 +61,8 @@ func main() {
 		infolog:  infolog,
 		// Chapter 4.4 - Initialize a mysql.SnippetModel instance into application dependencies
 		snippets: &mysql.SnippetModel{DB: db},
+		// Chapter 5.3 - Caching Templates
+		templateCache: templateCache,
 	}
 
 	// Chapter 3.5 - Isolation the Application Routes

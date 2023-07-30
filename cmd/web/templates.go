@@ -36,7 +36,7 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 		// Use the ParseGlob method to add any 'layout' templates to the
 		// template set (in our case, it's just the 'footer' layout at the
 		// moment).
-		ts, err = template.ParseGlob(filepath.Join(dir, "*.layout.tmpl"))
+		ts, err = ts.ParseGlob(filepath.Join(dir, "*.layout.tmpl"))
 		if err != nil {
 			return nil, err
 		}
@@ -44,7 +44,7 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 		// Use the ParseGlob method to add any 'partial' templates to the
 		// template set (in our case, it's just the 'footer' partial at the
 		// moment).
-		ts, err = template.ParseGlob(filepath.Join(dir, "*.partial.tmpl"))
+		ts, err = ts.ParseGlob(filepath.Join(dir, "*.partial.tmpl"))
 		if err != nil {
 			return nil, err
 		}
