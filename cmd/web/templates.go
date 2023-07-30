@@ -7,6 +7,8 @@ import "path/filepath"
 type templateData struct {
 	Snippet  *models.Snippet
 	Snippets []*models.Snippet
+	// Chap 5.5 - Common Dynamic data
+	CurrentYear int
 }
 
 // Chap 5.3 - Caching Templates
