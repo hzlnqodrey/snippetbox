@@ -48,7 +48,7 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 	// Chap 5.4 - Catching Runtime Errors
 	// Write to an in-memory buffer (instead of directly to a 'w') so
 	// to prevent incomplete HTML outputs in case of errors
-	buf := new(bytes.Buffer) // A Buffer is a variable-sized buffer of bytes with Read and Write methods. The zero value for Buffer is an empty buffer ready to use
+	buf := new(bytes.Buffer) 
 
 	// Execute the template set, passing in dynamic data,
 	err := ts.Execute(buf, app.addDefaultData(td, r))

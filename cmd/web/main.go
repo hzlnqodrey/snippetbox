@@ -12,8 +12,6 @@ import (
 	"github.com/hzlnqodrey/snippetbox.git/pkg/models/mysql"
 )
 
-// Chapter 3.3 - dependency Injection
-// For now we'll only include fields for the two custom logger
 // we'll add more to it as the build progresses.
 type application struct {
 	errorlog *log.Logger

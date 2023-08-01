@@ -3,12 +3,22 @@ package main
 import "github.com/hzlnqodrey/snippetbox.git/pkg/models"
 import "html/template"
 import "path/filepath"
+import "time"
 
 type templateData struct {
 	Snippet  *models.Snippet
 	Snippets []*models.Snippet
 	// Chap 5.5 - Common Dynamic data
 	CurrentYear int
+}
+
+// Chap 5.6 - Custome Template Function
+func humansDate(t time.Time) string {
+	return t.Format("02 Jan 2006 at 15:04")
+}
+
+var functions = template.FuncMap {
+	"humanDate": humansDate,
 }
 
 // Chap 5.3 - Caching Templates
@@ -30,7 +40,7 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 		name := filepath.Base(page)
 
 		// parse the page template
-		ts, err := template.ParseFiles(page)
+		ts, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
 			return nil, err
 		}
