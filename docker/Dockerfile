@@ -1,4 +1,4 @@
-# Use the official Go image as the base image
+# Stage 1: Use the official Go image as the base image
 FROM golang:1.18.5-alpine3.15 AS builder
 
 # Set the working directory inside the container
@@ -25,3 +25,37 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a  -installsuffix cgo -o snippetboxapp ./
 # Stage 2: Build the final image
 FROM alpine:latest
 
+# Set working directory
+WORKDIR /app
+
+# Copy the Go application binary from the builder stage
+COPY --from=builder /app/webapp .
+
+# Copy UI files
+COPY ui/ ./ui/
+
+# Copy MySQL configuration from pkg directory
+COPY pkg/ ./pkg/
+
+# Copy the initialization script
+COPY pkg/init.sql /docker-entrypoint-initdb.d/
+
+# Set environment variables for MySQL (using build arguments) [look at deploy.sh docker build cmd]
+ARG MYSQL_ROOT_PASSWORD
+ARG MYSQL_DATABASE
+ARG MYSQL_USER
+ARG MYSQL_PASSWORD
+
+ENV MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+ENV MYSQL_DATABASE=$MYSQL_DATABASE
+ENV MYSQL_USER=$MYSQL_USER
+ENV MYSQL_PASSWORD=$MYSQL_PASSWORD
+
+# Install MySQL client
+RUN apk add --no-cache mysql-client
+
+# Expose the application port
+EXPOSE 4000
+
+# Start the application
+CMD ["./webapp"]
