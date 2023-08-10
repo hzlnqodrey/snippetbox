@@ -34,7 +34,7 @@ INSERT INTO snippets (title, content, created, expires) VALUES (
 
 INSERT INTO snippets (title, content, created, expires) VALUES (
     'First autumn morning',
-    'First autumn morning\nthe mirror I stare into\nshows my father''s face.\n\',
+    'First autumn morning\nthe mirror I stare into\nshows my fathers face.\n',
     UTC_TIMESTAMP(),
     DATE_ADD(UTC_TIMESTAMP(), INTERVAL 7 DAY)
 );

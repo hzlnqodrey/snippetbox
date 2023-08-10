@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
-	"html/template"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/hzlnqodrey/snippetbox.git/pkg/models/mysql"
@@ -27,7 +27,10 @@ func main() {
 	addr := flag.String("addr", ":4000", "HTTP Network Address")
 
 	// Chapter 4.3 - Database Connection Pool
-	dsn := flag.String("dsn", "web:qodri123@/snippetbox?parseTime=true", "MySQL Database")
+	// dsn := flag.String("dsn", "web:pass123@/snippetbox?parseTime=true", "MySQL Database")
+	// modify for running in the container [SWAP WITH ABOVE IF YOU WANT TO RUN IT LOCAL]
+	dsn := flag.String("dsn", "root:qodri123@tcp(mysql-container:3306)/snippetbox?parseTime=true", "MySQL Database")
+
 	flag.Parse()
 
 	// Chapter 3.2 - Levelled Logging
