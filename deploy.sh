@@ -7,6 +7,10 @@
 docker network create my-network
 docker run -d --name mysql-container -e MYSQL_ROOT_PASSWORD={password} --network my-network mysql:8.0.15
 
+# create init sql - use docker exec -it mysql-container /bin/bash
+docker exec -it mysql-container /bin/bash
+[do a init.sql there]
+
 # INITIAL BUILD
 docker build -t snippetboxapp:1.0dev \
   --build-arg MYSQL_ROOT_PASSWORD=$(grep "MYSQL_ROOT_PASSWORD" .env | cut -d '=' -f2) \
@@ -23,4 +27,7 @@ docker run --name snippetboxapp -p 4000:4000 --network my-network snippetboxapp:
 # run in background
 docker run -d --name snippetboxapp -p 4000:4000 --network my-network snippetboxapp:latest
 
-
+# pushing docker to hub
+docker login
+docker tag snippetboxapp:latest {dockerhub_username}/snippetboxapp:latest
+docker push {dockerhub_username}/snippetboxapp:latest
