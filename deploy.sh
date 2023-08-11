@@ -31,3 +31,10 @@ docker run -d --name snippetboxapp -p 4000:4000 --network my-network snippetboxa
 docker login
 docker tag snippetboxapp:latest {dockerhub_username}/snippetboxapp:latest
 docker push {dockerhub_username}/snippetboxapp:latest
+
+
+# ============================ 
+# Using Docker Compose
+
+# create docker-compose.yml
+# docker-compose up -d
